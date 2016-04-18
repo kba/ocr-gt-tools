@@ -33,6 +33,10 @@
     background-color: gray;
 }
 
+table: {
+  position: relative;
+}
+
 
 td[contenteditable],
 div[contenteditable]
