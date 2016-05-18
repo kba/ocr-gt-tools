@@ -503,12 +503,14 @@ sub processRequest
     debug "CGI Params: %s", Dumper($cgi->{param});
     if ($action eq 'create') {
         processCreateRequest($cgi, $config);
+    } elsif ($action eq 'list') {
+        processListRequest($cgi, $config);
     } elsif ($action eq 'save') {
         processSaveRequest($cgi, $config);
     } elsif ($action eq 'history') {
         processHistoryRequest($cgi, $config);
     } else {
-        http400($cgi, "URL parameter 'action' must be 'create' or 'save', not %s", $action);
+        http400($cgi, "URL parameter 'action' must be 'create', 'list', 'save' or 'history', not %s", $action);
     }
 }
 
@@ -586,6 +588,14 @@ sub processHistoryRequest
     print "[";
     print join(',', reverse @lines);
     print "]";
+}
+
+sub processListRequest {
+    my ($cgi, $config) = @_;
+    my $corDir = join('/', $config->{docRoot}, $config->{correctionsRoot});
+    return httpJSON($cgi, {
+        find => [qx(find $corDir -name 'correction.html')]
+    });
 }
 
 debugStandout('START REQUEST');
